@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mnist-inference-deployment
+spec:
+  replicas: 3  # Adjust the number of replicas as needed
+  selector:
+    matchLabels:
+      app: mnist-inference
+  template:
+    metadata:
+      labels:
+        app: mnist-inference
+    spec:
+      containers:
+      - name: mnist-inference-container
+        image: mnist-inference-api:latest  # Use the image name from Dockerfile
+        ports:
+        - containerPort: 5000  # Port exposed in Dockerfile
