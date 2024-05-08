@@ -1,4 +1,4 @@
-FROM python:3.8
+FROM tensorflow/tensorflow  
 
 RUN apt-get update && apt-get install -y \
     libgl1-mesa-glx \
@@ -9,8 +9,10 @@ RUN apt-get update && apt-get install -y \
 
 WORKDIR /app
 
-COPY my-model.h5 inference.py requirements.txt ./
+COPY requirements.txt ./
 
 RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
 
 CMD ["python", "inference.py"]
