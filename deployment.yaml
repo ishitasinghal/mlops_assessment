@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: model-flask-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: model-flask-app
+  template:
+    metadata:
+      labels:
+        app: model-flask-app
+    spec:
+      containers:
+      - name: model-flask-app
+        image: ishita/model-flask-app:latest
+        ports:
+        - containerPort: 5000
