@@ -1,36 +1,26 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[2]:
-
-
 import os
 import cv2
 import numpy as np
 import matplotlib.pyplot as plt
 import tensorflow as tf
+from flask import Flask, request, jsonify
 
-
-# In[3]:
-
+app = Flask(__name__)
 
 model = tf.keras.models.load_model('my-model.h5')
 
-
-# In[4]:
-
-
-image_number = 1
-# print(os.path.isfile(f"digits/digit3.png"))
-while os.path.isfile(f"digits/{image_number}.png"):
+@app.route('/predict', methods=['POST'])
+def predict():
     try:
-        img = cv2.imread(f"digits/{image_number}.png")[:,:,0]
-        img = np.invert(np.array([img]))
+        file = request.files['file']
+        img = cv2.imdecode(np.fromstring(file.read(), np.uint8), cv2.IMREAD_GRAYSCALE)
+        img = cv2.resize(img, (28, 28))
+        img = np.invert(img)
+        img = img.reshape(1, 28, 28, 1)
         prediction = model.predict(img)
-        print(f"The number is probably: {np.argmax(prediction)}")
-        plt.imshow(img[0], cmap=plt.cm.binary)
-        plt.show()
+        return jsonify({'prediction': int(np.argmax(prediction))}), 200
     except Exception as e:
-        print(f"Error: {e}")
-    image_number += 1
+        return jsonify({'error': str(e)}), 500
 
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=5000)
