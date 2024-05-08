@@ -1,26 +1,18 @@
-import os
 import cv2
 import numpy as np
-import matplotlib.pyplot as plt
 import tensorflow as tf
-from flask import Flask, request, jsonify
-
-app = Flask(__name__)
+import gradio as gr
 
 model = tf.keras.models.load_model('my-model.h5')
 
-@app.route('/predict', methods=['POST'])
-def predict():
-    try:
-        file = request.files['file']
-        img = cv2.imdecode(np.fromstring(file.read(), np.uint8), cv2.IMREAD_GRAYSCALE)
-        img = cv2.resize(img, (28, 28))
-        img = np.invert(img)
-        img = img.reshape(1, 28, 28, 1)
-        prediction = model.predict(img)
-        return jsonify({'prediction': int(np.argmax(prediction))}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+def predict(image):
+    img = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    img = cv2.resize(img, (28, 28))
+    img = np.invert(img)
+    img = img.reshape(1, 28, 28, 1)
+    prediction = model.predict(img)
+    print(prediction)
+    return f'Number is: {int(np.argmax(prediction))}'
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+iface = gr.Interface(fn=predict, inputs="image", outputs="label")
+iface.launch(server_name="0.0.0.0")
