@@ -2,4 +2,4 @@ opencv-python
 tensorflow
 numpy
 matplotlib
-flask
+gradio
