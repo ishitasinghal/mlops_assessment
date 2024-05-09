@@ -21,6 +21,12 @@ wget --no-check-certificate --quiet \
 
 ## Screenshots
 
+
+Postman
 ![Postman](/docs/postman.png?raw=true "Postman")
+
+Gradio UI
 ![Gradio UI](/docs/browser.png?raw=true "Gradio UI")
+
+Kubernetes Resources
 ![K3S Deployment](/docs/k3s.png?raw=true "Kubernetes Resources")
